@@ -19,7 +19,7 @@ public class EmailServiceImpl implements EmailService {
     @Autowired
     private JavaMailSender mailSender;
 
-    @Value("${app.frontend.url:http://localhost:4200")
+    @Value("${app.frontend.url:http://localhost:4200}")
     private String frontendUrl;
 
     @Value("${spring.mail.username}")
@@ -43,7 +43,7 @@ public class EmailServiceImpl implements EmailService {
                         + verificationLink
                         + "\n\n"
                         + "This link will expiry in 24 hours.\n\n"
-                        + "If you didn't craete this account, please ignore this email.\n\n"
+                        + "If you didn't create this account, Please ignore this email.\n\n"
                         + "Best regards.\n"
                         + "Netflix CLone Team";
 
@@ -72,7 +72,7 @@ public class EmailServiceImpl implements EmailService {
                             + "We recieved a request to reset your password. Click the link below to reset it:\n\n"
                             + resetLink
                             + "\n\n"
-                            + "This link will expire in 1 hour"
+                            + "This link will expire in 1 hour "
                             + "If you didn't request a password reset, Please ignore this email.\n\n"
                             + "Best regards.\n"
                             + "Netflix Clone Team";

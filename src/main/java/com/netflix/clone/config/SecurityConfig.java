@@ -22,15 +22,16 @@ public class SecurityConfig {
     private JwtAuthenticationFilter jwtAuthenticationFilter;
 
     private static final String[] PUBLIC_ENDPOINTS = {
-        "api/auth/login",
-        "api/auth/signup",
-        "api/auth/validate-email",
-        "api/auth/verify-email",
-        "api/auth/resend-verification",
-        "api/auth/forgot-password",
-        "api/auth/reset-password"
+            "/api/auth/login",
+            "/api/auth/signup",
+            "/api/auth/validate-email",
+            "/api/auth/verify-email",
+            "/api/auth/resend-verification",
+            "/api/auth/forgot-password",
+            "/api/auth/reset-password"
     };
 
+    @Bean
     public PasswordEncoder passwordEncoder()
     {
         return org.springframework.security.crypto.password.NoOpPasswordEncoder.getInstance();
