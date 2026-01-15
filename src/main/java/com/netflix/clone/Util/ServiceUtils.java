@@ -1,6 +1,6 @@
 package com.netflix.clone.Util;
 
-import com.netflix.clone.dao.UserRepositpry;
+import com.netflix.clone.dao.UserRepository;
 import com.netflix.clone.dao.VideoRepository;
 import com.netflix.clone.entity.User;
 import com.netflix.clone.entity.Video;
@@ -15,20 +15,20 @@ import java.lang.module.ResolutionException;
 public class ServiceUtils {
 
     @Autowired
-    private UserRepositpry userRepositpry;
+    private UserRepository userRepository;
 
     @Autowired
     private VideoRepository videoRepository;
 
     public User getUSerByEmailOrThrow(String email)
     {
-        return userRepositpry.findByEmail(email)
+        return userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResolutionException("User not found with email: "+email));
     }
 
     public User getUserByIdOrThrow(Long id)
     {
-        return userRepositpry
+        return userRepository
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id:"+id));
     }

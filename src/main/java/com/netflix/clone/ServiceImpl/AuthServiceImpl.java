@@ -3,7 +3,7 @@ package com.netflix.clone.ServiceImpl;
 import com.netflix.clone.Service.AuthService;
 import com.netflix.clone.Service.EmailService;
 import com.netflix.clone.Util.ServiceUtils;
-import com.netflix.clone.dao.UserRepositpry;
+import com.netflix.clone.dao.UserRepository;
 import com.netflix.clone.dto.request.UserRequest;
 import com.netflix.clone.dto.response.EmailValidationResponse;
 import com.netflix.clone.dto.response.LoginResponse;
@@ -23,7 +23,7 @@ import java.util.UUID;
 public class AuthServiceImpl implements AuthService {
 
     @Autowired
-    private UserRepositpry userRepositpry;
+    private UserRepository userRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -40,7 +40,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public MessageResponse signup(UserRequest userRequest) {
 
-        if(userRepositpry.existsByEmail(userRequest.getEmail()))
+        if(userRepository.existsByEmail(userRequest.getEmail()))
         {
             throw new EmailAlreadyExistsException("Email already exists.");
         }
@@ -55,7 +55,7 @@ public class AuthServiceImpl implements AuthService {
         String verificationToken = UUID.randomUUID().toString();
         user.setVerificationToken(verificationToken);
         user.setVerificationTokenExpiry(Instant.now().plusSeconds(86400));
-        userRepositpry.save(user);
+        userRepository.save(user);
         emailService.sendVerificationEmail(userRequest.getEmail(), verificationToken);
 
         return new MessageResponse("Registration successful! Please check your email to verify your account");
@@ -63,7 +63,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public LoginResponse login(String email, String password) {
-        User user = userRepositpry
+        User user = userRepository
                 .findByEmail(email)
                 .filter(u -> passwordEncoder.matches(password, u.getPassword()))
                 .orElseThrow(() -> new BadCredentialsException("Invalid email or password."));
@@ -87,14 +87,14 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public EmailValidationResponse validateEmail(String email) {
-        boolean exists = userRepositpry.existsByEmail(email);
+        boolean exists = userRepository.existsByEmail(email);
         return new EmailValidationResponse(exists, !exists);
     }
 
     @Override
     public MessageResponse verifyEmail(String token) {
         User user =
-                userRepositpry
+                userRepository
                         .findByVerificationToken(token)
                         .orElseThrow(() -> new InvalidTokenException("Invalid or expired verification token."));
 
@@ -107,7 +107,7 @@ public class AuthServiceImpl implements AuthService {
         user.setEmailVerified(true);
         user.setVerificationToken(null);
         user.setVerificationTokenExpiry(null);
-        userRepositpry.save(user);
+        userRepository.save(user);
         return new MessageResponse("Email verified successfully! you can now login.");
     }
 
@@ -118,7 +118,7 @@ public class AuthServiceImpl implements AuthService {
         String verificationToken = UUID.randomUUID().toString();
         user.setVerificationToken(verificationToken);
         user.setVerificationTokenExpiry(Instant.now().plusSeconds(86400));
-        userRepositpry.save(user);
+        userRepository.save(user);
         emailService.sendVerificationEmail(email, verificationToken);
 
         return new MessageResponse("Verification email resent successfully! Please check your inbox.");
@@ -130,7 +130,7 @@ public class AuthServiceImpl implements AuthService {
         String resetToken = UUID.randomUUID().toString();
         user.setPasswordResetToken(resetToken);
         user.setPasswordResetTokenExpiry(Instant.now().plusSeconds(3600));
-        userRepositpry.save(user);
+        userRepository.save(user);
         emailService.sendPasswordResetEmail(email, resetToken);
 
         return new MessageResponse("Password reset email sent successfully! Please check your inbox.");
@@ -139,7 +139,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public MessageResponse resetPassword(String token, String newPassword) {
         User user =
-                userRepositpry
+                userRepository
                         .findByPasswordResetToken(token)
                         .orElseThrow(() -> new InvalidTokenException("Invalid or expired reset token"));
 
@@ -150,7 +150,7 @@ public class AuthServiceImpl implements AuthService {
         user.setPassword(passwordEncoder.encode(newPassword));
         user.setPasswordResetToken(null);
         user.setPasswordResetTokenExpiry(null);
-        userRepositpry.save(user);
+        userRepository.save(user);
 
         return new MessageResponse("Password reset successfully. You can now log in with your new password");
     }
@@ -165,7 +165,7 @@ public class AuthServiceImpl implements AuthService {
        }
 
        user.setPassword(passwordEncoder.encode(newPassword));
-       userRepositpry.save(user);
+       userRepository.save(user);
        return new MessageResponse("Password changed successfully.");
     }
 
