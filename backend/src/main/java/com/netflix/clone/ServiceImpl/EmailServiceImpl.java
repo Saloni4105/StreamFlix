@@ -45,7 +45,7 @@ public class EmailServiceImpl implements EmailService {
                         + "This link will expiry in 24 hours.\n\n"
                         + "If you didn't create this account, Please ignore this email.\n\n"
                         + "Best regards.\n"
-                        + "Netflix CLone Team";
+                        + "Netflix Clone Team";
 
             message.setText(emailBody);
             mailSender.send(message);
