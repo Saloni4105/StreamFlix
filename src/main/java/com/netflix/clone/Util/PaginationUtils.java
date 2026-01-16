@@ -18,6 +18,9 @@ public class PaginationUtils {
 
     public static Pageable createPageRequest(int page, int size, String sortBy)
     {
+        if (sortBy == null || sortBy.trim().isEmpty()) {
+            sortBy = "id";
+        }
         return PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortBy));
     }
 
