@@ -50,7 +50,7 @@ public class VideoServiceImpl implements VideoService {
 
     @Override
     public PageResponse<VideoResponse> getAllAdminVideos(int page, int size, String search) {
-        Pageable pageable = PaginationUtils.createPageRequest(page, size, search);
+        Pageable pageable = PaginationUtils.createPageRequest(page, size,"");
         Page<Video> videoPage;
 
         if(search != null && !search.trim().isEmpty())
@@ -108,7 +108,7 @@ public class VideoServiceImpl implements VideoService {
 
     @Override
     public PageResponse<VideoResponse> getPublishedVideos(int page, int size, String search, String email) {
-       Pageable pageable = PaginationUtils.createPageRequest(page, size, "id");
+       Pageable pageable = PaginationUtils.createPageRequest(page, size);
        Page<Video> videoPage;
 
        if(search != null && !search.trim().isEmpty())

@@ -24,7 +24,7 @@ public class PaginationUtils {
         return PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortBy));
     }
 
-    public static Pageable cretePageRequest(int page, int size)
+    public static Pageable createPageRequest(int page, int size)
     {
         return PageRequest.of(page, size);
     }
@@ -46,4 +46,6 @@ public class PaginationUtils {
                 page.getSize()
         );
     }
+
+
 }

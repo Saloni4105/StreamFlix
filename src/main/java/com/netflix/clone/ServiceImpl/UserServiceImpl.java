@@ -98,7 +98,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public PageResponse<UserResponse> getUsers(int page, int size, String search) {
 
-        Pageable pageable = PaginationUtils.createPageRequest(page, size, "id");
+        Pageable pageable = PaginationUtils.createPageRequest(page, size);
 
         Page<User> userPage;
 
