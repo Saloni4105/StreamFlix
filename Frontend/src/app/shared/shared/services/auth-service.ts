@@ -19,7 +19,7 @@ export class AuthService {
   constructor(
     private http: HttpClient,
     private router: Router
-  ) {}
+  ) { }
 
   passwordMatchValidator(passwordControlName: string): ValidatorFn {
     return (confirmControl: AbstractControl): ValidationErrors | null => {
@@ -51,6 +51,8 @@ export class AuthService {
   }
 
   handleAuthSuccess(authData: any) {
+    if (!authData) return;
+
     if (authData?.token) {
       localStorage.setItem('token', authData.token);
     }
@@ -86,5 +88,47 @@ export class AuthService {
 
   resendVerificationEmail(email: string) {
     return this.http.post(this.apiUrl + '/resend-verification', { email });
+  }
+
+  forgotPassword(email: string) {
+    return this.http.post(this.apiUrl + '/forgot-password', { email });
+  }
+
+  resetPassword(resetPasswordData: { token: string; newPassword: string }) {
+  return this.http.post(this.apiUrl + '/reset-password', resetPasswordData);
+}
+
+
+  initializeAuth(): Promise<void>{
+    return new Promise((resolve) =>{
+      if(!this.isLoggedIn())
+      {
+        this.setCurrentUser(null);
+        resolve();
+        return;
+      }
+
+      this.fetchCurrentUser().subscribe({
+        next:(user) =>{
+          this.handleAuthSuccess(user);
+          resolve();
+        },
+        error: () =>{
+          this.handleAuthSuccess(null);
+          resolve();
+        }
+      })
+    })
+  }
+
+  private fetchCurrentUser(){
+    return this.http.get(this.apiUrl + '/current-user');
+  }
+
+  logout()
+  {
+    localStorage.removeItem('token');
+    this.currentUserSubject.next(null);
+    this.router.navigate(['/']);
   }
 }

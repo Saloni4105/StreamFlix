@@ -1,4 +1,4 @@
-import { NgModule, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { inject, NgModule, provideAppInitializer, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing-module';
@@ -11,6 +11,8 @@ import { Login } from './login/login';
 import { VerifyEmail } from './verify-email/verify-email';
 import { Home } from './user/home/home';
 import { authInterceptor } from './shared/interceptor/auth-interceptor';
+import { AuthService } from './shared/shared/services/auth-service';
+
 
 @NgModule({
   declarations: [
@@ -19,7 +21,7 @@ import { authInterceptor } from './shared/interceptor/auth-interceptor';
     Signup,
     Login,
     VerifyEmail,
-    Home
+    Home,
   ],
   imports: [
     BrowserModule,
@@ -27,6 +29,10 @@ import { authInterceptor } from './shared/interceptor/auth-interceptor';
     SharedModule
   ],
   providers: [
+    provideAppInitializer(() =>{
+      const auth = inject(AuthService);
+      return auth.initializeAuth();
+    }),
     provideBrowserGlobalErrorListeners(),
     provideHttpClient(withInterceptors([authInterceptor]))
   ],
