@@ -131,4 +131,9 @@ export class AuthService {
     this.currentUserSubject.next(null);
     this.router.navigate(['/']);
   }
+
+  changePassword(changePasswordData: any)
+  {
+    return this.http.post(this.apiUrl + '/change-password', changePasswordData);
+  }
 }

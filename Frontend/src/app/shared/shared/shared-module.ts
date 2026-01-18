@@ -24,6 +24,9 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ConfirmDialog } from '../components/confirm-dialog/confirm-dialog';
+import { HeaderComponent } from '../components/header/header';
+import { ChangePasswordDialog } from '../components/change-password-dialog/change-password-dialog';
 
 const MATERIAL_MODULES = [
   MatIconModule,
@@ -46,12 +49,15 @@ const MATERIAL_MODULES = [
   MatSlideToggleModule,
   MatSliderModule,
   MatToolbarModule,
-  MatExpansionModule,
-  MatToolbarModule
+  MatExpansionModule
 ];
 
 @NgModule({
-  declarations: [],
+  declarations: [
+    ConfirmDialog,
+    HeaderComponent,
+    ChangePasswordDialog
+  ],
   imports: [
     CommonModule,
     RouterModule,
@@ -60,6 +66,9 @@ const MATERIAL_MODULES = [
     ...MATERIAL_MODULES
   ],
   exports: [
+    ConfirmDialog,
+    HeaderComponent,
+    ChangePasswordDialog,
     CommonModule,
     RouterModule,
     FormsModule,
