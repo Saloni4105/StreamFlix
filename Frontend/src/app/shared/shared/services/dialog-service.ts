@@ -5,13 +5,14 @@ import { Observable } from 'rxjs';
 import { ChangePasswordDialog } from '../../components/change-password-dialog/change-password-dialog';
 import { ConfirmDialog } from '../../components/confirm-dialog/confirm-dialog';
 import { DIALOG_CONFIG } from '../../constants/app.constant';
+import { ManageVideo } from '../../../admin/dialog/manage-video/manage-video';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DialogService {
 
-  constructor(private dialog: MatDialog) {}
+  constructor(private dialog: MatDialog) { }
 
   openChangePasswordDialog(): MatDialogRef<ChangePasswordDialog> {
     return this.dialog.open(
@@ -40,5 +41,17 @@ export class DialogService {
     });
 
     return dialogRef.afterClosed();
+  }
+
+  openVideoFormDialog(mode: 'create' | 'edit', video?: any): MatDialogRef<ManageVideo> {
+    return this.dialog.open(
+      ManageVideo, {
+      ...DIALOG_CONFIG.VIDEO_FROM,
+      data: {
+        mode,
+        video
+      }
+    }
+    );
   }
 }
