@@ -72,7 +72,7 @@ public class AuthController {
         return ResponseEntity.ok(
                 authService.changePassword(
                         email,
-                        changePasswordRequest.getCurrentPasssword(),
+                        changePasswordRequest.getCurrentPassword(),
                         changePasswordRequest.getNewPassword()
                 )
         );
