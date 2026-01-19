@@ -7,6 +7,7 @@ import { ConfirmDialog } from '../../components/confirm-dialog/confirm-dialog';
 import { DIALOG_CONFIG } from '../../constants/app.constant';
 import { ManageVideo } from '../../../admin/dialog/manage-video/manage-video';
 import { VideoPlayer } from '../../components/video-player/video-player';
+import { ManageUser } from '../../../admin/dialog/manage-user/manage-user';
 
 @Injectable({
   providedIn: 'root',
@@ -61,6 +62,18 @@ export class DialogService {
       VideoPlayer, {
         data: video,
       ...DIALOG_CONFIG.VIDEO_pLAYER
+    }
+    );
+  }
+
+  openManageUserDialog(mode: 'create' | 'edit', user?: any): MatDialogRef<ManageUser> {
+    return this.dialog.open(
+      ManageUser, {
+      ...DIALOG_CONFIG.MANAGE_USER,
+      data: {
+        mode,
+        user
+      }
     }
     );
   }

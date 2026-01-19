@@ -47,6 +47,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll() // 🔥 ADD THIS
                         .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
+
+                        .requestMatchers("/api/files/image/**").permitAll()
+                        .requestMatchers("/api/files/video/**").authenticated()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session ->session
