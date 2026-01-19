@@ -92,8 +92,8 @@ export class MediaService {
       return null;
     }
 
-    const authenticatedUrl =
-      `${this.apiUrl}/${type}/${uuid}?token=${encodeURIComponent(token)}`;
+const authenticatedUrl =
+  `${this.apiUrl}/${type}/${uuid}?token=${encodeURIComponent(token)}`;
 
     // save in cache
     if (options?.useCache && type === 'image') {

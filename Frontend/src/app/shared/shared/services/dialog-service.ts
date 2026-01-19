@@ -6,6 +6,7 @@ import { ChangePasswordDialog } from '../../components/change-password-dialog/ch
 import { ConfirmDialog } from '../../components/confirm-dialog/confirm-dialog';
 import { DIALOG_CONFIG } from '../../constants/app.constant';
 import { ManageVideo } from '../../../admin/dialog/manage-video/manage-video';
+import { VideoPlayer } from '../../components/video-player/video-player';
 
 @Injectable({
   providedIn: 'root',
@@ -51,6 +52,15 @@ export class DialogService {
         mode,
         video
       }
+    }
+    );
+  }
+
+  openVideoPlayerDialog(video: any): MatDialogRef<VideoPlayer> {
+    return this.dialog.open(
+      VideoPlayer, {
+        data: video,
+      ...DIALOG_CONFIG.VIDEO_pLAYER
     }
     );
   }

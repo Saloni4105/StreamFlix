@@ -14,6 +14,7 @@ import { SharedModule } from './shared/shared/shared-module';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { authInterceptor } from './shared/interceptor/auth-interceptor';
 import { AuthService } from './shared/shared/services/auth-service';
+import { VideoPlayer } from './shared/components/video-player/video-player';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { AuthService } from './shared/shared/services/auth-service';
     Signup,
     Login,
     VerifyEmail,
-    Home
+    Home,
+    VideoPlayer
   ],
   imports: [
     BrowserModule,
