@@ -743,3 +743,31 @@ body, html {
   margin: 0;
   padding: 0;
 }
+
+/* Clear Search Button - Red */
+.empty-state button {
+  background-color: #e50914; /* Netflix red */
+  color: #ffffff;
+  font-weight: 600;
+  padding: 10px 24px;
+  border-radius: 6px;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.empty-state button mat-icon {
+  color: #ffffff;
+}
+
+/* Hover effect */
+.empty-state button:hover {
+  background-color: #b20710;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(229, 9, 20, 0.4);
+}
+
+/* Focus (keyboard accessibility) */
+.empty-state button:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(229, 9, 20, 0.6);
+}
