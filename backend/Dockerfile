@@ -1,17 +1,23 @@
-# Use Java 17 (Spring Boot compatible & stable)
-FROM eclipse-temurin:17-jdk-alpine
-
-# App directory
+# ---------- BUILD STAGE ----------
+FROM maven:3.9.6-eclipse-temurin-17 AS build
 WORKDIR /app
 
-# Copy all backend files
-COPY . .
+# Copy pom.xml and download dependencies
+COPY pom.xml .
+RUN mvn dependency:go-offline
 
-# Build the application (skip tests for faster deploy)
-RUN ./mvnw clean package -DskipTests
+# Copy source code
+COPY src ./src
 
-# Expose port used by Spring Boot
+# Build the application
+RUN mvn clean package -DskipTests
+
+
+# ---------- RUN STAGE ----------
+FROM eclipse-temurin:17
+WORKDIR /app
+
+COPY --from=build /app/target/*.jar app.jar
+
 EXPOSE 8080
-
-# Run the jar
-CMD ["java", "-jar", "target/*.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
