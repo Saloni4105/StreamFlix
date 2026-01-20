@@ -53,6 +53,8 @@ export class MediaService {
     );
   }
 
+  /* ================= IMAGE + VIDEO URL (UNCHANGED) ================= */
+
   getMediaUrl(
     mediaValue: any,
     type: 'image' | 'video',
@@ -92,14 +94,30 @@ export class MediaService {
       return null;
     }
 
-const authenticatedUrl =
-  `${this.apiUrl}/${type}/${uuid}?token=${encodeURIComponent(token)}`;
+    const authenticatedUrl =
+      `${this.apiUrl}/${type}/${uuid}?token=${encodeURIComponent(token)}`;
 
-    // save in cache
     if (options?.useCache && type === 'image') {
       this.imageCache.set(uuid, authenticatedUrl);
     }
 
     return authenticatedUrl;
   }
+
+  
+  getVideoBlob(uuid: string): Observable<Blob> {
+    const token = this.authService.getToken();
+
+    if (!token) {
+      throw new Error('No auth token found');
+    }
+
+    const url =
+      `${this.apiUrl}/video/${uuid}?token=${encodeURIComponent(token)}`;
+
+    return this.http.get(url, {
+      responseType: 'blob'
+    });
+  }
+
 }

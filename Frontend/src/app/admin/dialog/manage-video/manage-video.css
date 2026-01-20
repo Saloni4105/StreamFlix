@@ -782,3 +782,32 @@
   overflow: hidden;
 }
 
+/* ================= FORCE RED SAVE BUTTON (FINAL) ================= */
+
+/* Actual MDC raised button background */
+::ng-deep .video-form-container
+.footer-save.mat-mdc-raised-button.mdc-button--raised {
+  background-color: #e50914 !important;
+}
+
+/* Text + icon */
+::ng-deep .video-form-container
+.footer-save.mat-mdc-raised-button.mdc-button--raised
+.mdc-button__label,
+::ng-deep .video-form-container
+.footer-save.mat-mdc-raised-button.mdc-button--raised mat-icon {
+  color: #ffffff !important;
+}
+
+/* Hover */
+::ng-deep .video-form-container
+.footer-save.mat-mdc-raised-button.mdc-button--raised:hover:not(:disabled) {
+  background-color: #b20710 !important;
+}
+
+/* Disabled */
+::ng-deep .video-form-container
+.footer-save.mat-mdc-raised-button.mdc-button--raised:disabled {
+  background-color: rgba(229, 9, 20, 0.4) !important;
+}
+

@@ -131,9 +131,14 @@
             </div>
         </section>
 
+        <div *ngIf="filteredVideos.length === 0 && !searchQuery" class="empty-state">
+            <mat-icon class="empty-icon">video_library</mat-icon>
+            <h2>No videos available yet</h2>
+            <p>Check back later for new content</p>
+        </div>
         
         <div *ngIf="filteredVideos.length === 0 && searchQuery" class="empty-state">
-            <mat-icon class="empty-icon">video_library</mat-icon>
+            <mat-icon class="empty-icon">search_off</mat-icon>
             <h2>No Results Found</h2>
             <p>Try adjusting your search terms</p>
             <button mat-raised-button color="primary" (click)="clearSearch()">

@@ -3,14 +3,13 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MediaService } from '../../shared/services/media-service';
 import { UtilityService } from '../../shared/services/utility-service';
 
-
 @Component({
   selector: 'app-video-player',
   standalone: false,
   templateUrl: './video-player.html',
   styleUrl: './video-player.css',
 })
-export class VideoPlayer implements OnInit, OnDestroy{
+export class VideoPlayer implements OnInit, OnDestroy {
 
   @ViewChild('videoPlayer', { static: true }) videoElement!: ElementRef<HTMLVideoElement>;
 
@@ -27,8 +26,8 @@ export class VideoPlayer implements OnInit, OnDestroy{
   private boundKeydownHandler: any;
   authenticatedVideoUrl: string | null = null;
 
-  // 1.constructor
-  constructor(public dialogRef: MatDialogRef<VideoPlayer>,
+  constructor(
+    public dialogRef: MatDialogRef<VideoPlayer>,
     @Inject(MAT_DIALOG_DATA) public video: any,
     public utilityService: UtilityService,
     public mediaService: MediaService
@@ -36,29 +35,63 @@ export class VideoPlayer implements OnInit, OnDestroy{
     this.boundFullscreenHandler = this.onFullscreenChange.bind(this);
     this.boundKeydownHandler = this.onKeyDown.bind(this);
 
+    // 🔴 FIX: load video via blob
     this.loadAuthenticatedVideo();
   }
-  // 2. lifecycle hooks
 
   ngOnInit(): void {
     this.startControlsTimer();
     document.addEventListener('fullscreenchange', this.boundFullscreenHandler);
     document.addEventListener('keydown', this.boundKeydownHandler);
+
     this.dialogRef.beforeClosed().subscribe(() => {
       this.cleanup();
     });
   }
 
   ngOnDestroy(): void {
-      this.cleanup();
-  }
-  // 3.Initialization & cleanup
-  private loadAuthenticatedVideo(): void{
-    this.authenticatedVideoUrl = this.mediaService.getMediaUrl(this.video.src, 'video');
+    this.cleanup();
   }
 
-  private cleanup(){
-    if(this.controlsTimeout){
+  /* ================= VIDEO LOADING (FIXED) ================= */
+
+  private loadAuthenticatedVideo(): void {
+    const src = this.video?.src;
+
+    if (!src) {
+      console.error('Video src missing');
+      return;
+    }
+
+    // 🔴 IMPORTANT: extract UUID correctly
+    const uuid = src.includes('/')
+      ? src.substring(src.lastIndexOf('/') + 1)
+      : src;
+
+    console.log('VIDEO UUID:', uuid);
+
+    this.mediaService.getVideoBlob(uuid).subscribe({
+      next: (blob) => {
+        this.authenticatedVideoUrl = URL.createObjectURL(blob);
+
+        // 🔴 REQUIRED: force reload video after blob set
+        setTimeout(() => {
+          if (this.videoElement?.nativeElement) {
+            this.videoElement.nativeElement.load();
+          }
+        });
+
+      },
+      error: (err) => {
+        console.error('Video load failed', err);
+      }
+    });
+  }
+
+  /* ================= CLEANUP ================= */
+
+  private cleanup() {
+    if (this.controlsTimeout) {
       clearTimeout(this.controlsTimeout);
       this.controlsTimeout = null;
     }
@@ -66,7 +99,7 @@ export class VideoPlayer implements OnInit, OnDestroy{
     document.removeEventListener('fullscreenchange', this.boundFullscreenHandler);
     document.removeEventListener('keydown', this.boundKeydownHandler);
 
-    if(this.videoElement?.nativeElement){
+    if (this.videoElement?.nativeElement) {
       const video = this.videoElement.nativeElement;
       video.pause();
       video.currentTime = 0;
@@ -75,12 +108,18 @@ export class VideoPlayer implements OnInit, OnDestroy{
       this.isPlaying = false;
     }
 
-    if(document.fullscreenElement){
-      document.exitFullscreen().catch(() =>{});
+    // 🔴 IMPORTANT: revoke blob URL
+    if (this.authenticatedVideoUrl) {
+      URL.revokeObjectURL(this.authenticatedVideoUrl);
+      this.authenticatedVideoUrl = null;
+    }
+
+    if (document.fullscreenElement) {
+      document.exitFullscreen().catch(() => { });
     }
   }
 
-  // 4.Event Handler
+  /* ================= EVENTS ================= */
 
   onKeyDown(event: KeyboardEvent) {
     if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
@@ -118,43 +157,44 @@ export class VideoPlayer implements OnInit, OnDestroy{
         this.toggleFullScreen();
         break;
       case 'esc':
-        if(document.fullscreenElement){
+        if (document.fullscreenElement) {
           event.preventDefault();
           document.exitFullscreen();
-        }
-        else{
+        } else {
           this.closePlayer();
         }
         break;
     }
   }
+
   onFullscreenChange() {
     this.isFullscreen = !!document.fullscreenElement;
   }
 
-  onLoadedMetadata(){
-    if(this.videoElement?.nativeElement){
+  onLoadedMetadata() {
+    if (this.videoElement?.nativeElement) {
       this.duration = this.videoElement.nativeElement.duration;
     }
   }
 
-  onTimeUpdate(){
-    if(this.videoElement?.nativeElement){
+  onTimeUpdate() {
+    if (this.videoElement?.nativeElement) {
       this.currentTime = this.videoElement.nativeElement.currentTime;
     }
   }
 
-  onMouseMove(){
+  onMouseMove() {
     this.showControls = true;
     this.startControlsTimer();
   }
 
-  onVideoClick(){
+  onVideoClick() {
     this.togglePlay();
   }
 
   onProgressClick(event: MouseEvent) {
     if (!this.videoElement?.nativeElement || !this.duration) return;
+
     const progressBar = event.currentTarget as HTMLElement;
     const rect = progressBar.getBoundingClientRect();
     const pos = (event.clientX - rect.left) / rect.width;
@@ -164,7 +204,7 @@ export class VideoPlayer implements OnInit, OnDestroy{
     this.currentTime = newTime;
   }
 
-  // 5.Video Playback Controls
+  /* ================= PLAYBACK ================= */
 
   togglePlay() {
     if (!this.videoElement?.nativeElement) return;
@@ -176,7 +216,7 @@ export class VideoPlayer implements OnInit, OnDestroy{
       video.play().then(() => {
         this.isPlaying = true;
       }).catch(err => {
-        console.error("Play error:", err);
+        console.error('Play error:', err);
         this.isPlaying = false;
       });
     } else {
@@ -196,7 +236,6 @@ export class VideoPlayer implements OnInit, OnDestroy{
 
   seekForward() {
     if (!this.videoElement?.nativeElement) return;
-
     const video = this.videoElement.nativeElement;
     video.currentTime = Math.min(video.duration, video.currentTime + 10);
   }
@@ -207,10 +246,10 @@ export class VideoPlayer implements OnInit, OnDestroy{
     video.currentTime = Math.max(0, video.currentTime - 10);
   }
 
-  // 6.volume controls
+  /* ================= VOLUME ================= */
+
   toggleMute() {
     if (!this.videoElement?.nativeElement) return;
-
     const video = this.videoElement.nativeElement;
     video.muted = !video.muted;
     this.isMuted = video.muted;
@@ -218,17 +257,14 @@ export class VideoPlayer implements OnInit, OnDestroy{
 
   changeVolume(event: Event) {
     if (!this.videoElement?.nativeElement) return;
-
     const target = event.target as HTMLInputElement;
     const value = parseFloat(target.value);
-
     this.setVolume(value);
     this.isMuted = value === 0;
   }
 
   increaseVolume() {
     if (!this.videoElement?.nativeElement) return;
-
     const newVolume = Math.min(1, this.volume + 0.1);
     this.setVolume(newVolume);
     this.isMuted = false;
@@ -237,7 +273,6 @@ export class VideoPlayer implements OnInit, OnDestroy{
 
   decreaseVolume() {
     if (!this.videoElement?.nativeElement) return;
-
     const newVolume = Math.min(1, this.volume - 0.1);
     this.setVolume(newVolume);
     this.isMuted = newVolume === 0;
@@ -245,13 +280,13 @@ export class VideoPlayer implements OnInit, OnDestroy{
 
   private setVolume(value: number) {
     if (!this.videoElement?.nativeElement) return;
-
     const video = this.videoElement.nativeElement;
     video.volume = value;
     this.volume = value;
   }
 
-  // 7.FullScreen controls
+  /* ================= FULLSCREEN ================= */
+
   toggleFullScreen() {
     const container = document.querySelector('.player-container');
     if (!document.fullscreenElement) {
@@ -263,7 +298,8 @@ export class VideoPlayer implements OnInit, OnDestroy{
     }
   }
 
-  // 8. UI controls
+  /* ================= UI ================= */
+
   startControlsTimer() {
     if (this.controlsTimeout) {
       clearTimeout(this.controlsTimeout);
@@ -275,25 +311,27 @@ export class VideoPlayer implements OnInit, OnDestroy{
     }, 3000);
   }
 
-  closePlayer(){
+  closePlayer() {
     this.dialogRef.close();
   }
 
-  // 9.utility methods
-  formatTime(seconds: number): string{
+  /* ================= UTILS ================= */
+
+  formatTime(seconds: number): string {
     return this.utilityService.formatDuration(seconds);
   }
 
-  // 10. Getters
-  get videoSrc(): string | null{
+  /* ================= GETTERS ================= */
+
+  get videoSrc(): string | null {
     return this.authenticatedVideoUrl;
   }
 
-  get progressPercent(): number{
+  get progressPercent(): number {
     return this.duration ? (this.currentTime / this.duration) * 100 : 0;
   }
 
-  get volumePercent(): number{
+  get volumePercent(): number {
     return this.volume * 100;
   }
 }

@@ -15,6 +15,7 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { authInterceptor } from './shared/interceptor/auth-interceptor';
 import { AuthService } from './shared/shared/services/auth-service';
 import { VideoPlayer } from './shared/components/video-player/video-player';
+import { MyFavorites } from './user/my-favorites/my-favorites';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { VideoPlayer } from './shared/components/video-player/video-player';
     Login,
     VerifyEmail,
     Home,
-    VideoPlayer
+    VideoPlayer,
+    MyFavorites
   ],
   imports: [
     BrowserModule,
