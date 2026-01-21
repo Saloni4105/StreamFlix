@@ -8,7 +8,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -21,19 +21,19 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity   // keep (future-ready)
+@EnableMethodSecurity
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    // ✅ Constructor injection (FIX #1)
     public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
+    // 🔥 BCrypt REMOVED – Plain text passwords
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+        return NoOpPasswordEncoder.getInstance();
     }
 
     @Bean
@@ -48,18 +48,13 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
 
-                        // 🔓 Public endpoints (FIX #2)
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/videos/featured").permitAll()
                         .requestMatchers("/api/files/image/**").permitAll()
 
-                        // 👤 USER + ADMIN
                         .requestMatchers("/api/user/**").hasAnyRole("USER", "ADMIN")
-
-                        // 👑 ADMIN only
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
 
-                        // 🎥 Protected videos
                         .requestMatchers("/api/files/video/**").authenticated()
 
                         .anyRequest().authenticated()
@@ -69,13 +64,11 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // ✅ CORS config (FIX #3 – explicit source)
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
 
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of(
-                "https://streamflix-sg.netlify.app",
                 "http://localhost:4200"
         ));
         config.setAllowedMethods(List.of(

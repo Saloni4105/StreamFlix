@@ -36,28 +36,26 @@ export class AuthService {
     };
   }
 
-  // 🔥 FIXED
+
   signup(signupData: any) {
     return this.http.post(
       this.apiUrl + '/signup',
-      signupData,
-      { withCredentials: true }
-    );
-  }
-
-  verifyEmail(token: string) {
-    return this.http.get(
-      this.apiUrl + '/verify-email?token=' + token,
-      { withCredentials: true }
+      signupData
     );
   }
 
  
+  verifyEmail(token: string) {
+    return this.http.get(
+      this.apiUrl + '/verify-email?token=' + token
+    );
+  }
+
+  
   login(loginData: any) {
     return this.http.post(
       this.apiUrl + '/login',
-      loginData,
-      { withCredentials: true }
+      loginData
     ).pipe(
       tap(response => this.handleAuthSuccess(response))
     );
@@ -96,33 +94,30 @@ export class AuthService {
 
   isAdmin(): boolean {
     const user = this.getCurrentUser();
-    console.log('Checking admin role for user:', user);
-    const isAdmin = user?.role === 'ADMIN';
-    console.log('Is admin result:', isAdmin);
-    return isAdmin;
+    return user?.role === 'ADMIN';
   }
 
+  
   resendVerificationEmail(email: string) {
     return this.http.post(
       this.apiUrl + '/resend-verification',
-      { email },
-      { withCredentials: true }
+      { email }
     );
   }
+
 
   forgotPassword(email: string) {
     return this.http.post(
       this.apiUrl + '/forgot-password',
-      { email },
-      { withCredentials: true }
+      { email }
     );
   }
 
+  
   resetPassword(resetPasswordData: { token: string; newPassword: string }) {
     return this.http.post(
       this.apiUrl + '/reset-password',
-      resetPasswordData,
-      { withCredentials: true }
+      resetPasswordData
     );
   }
 
@@ -149,8 +144,7 @@ export class AuthService {
 
   private fetchCurrentUser() {
     return this.http.get(
-      this.apiUrl + '/current-user',
-      { withCredentials: true }
+      this.apiUrl + '/current-user'
     );
   }
 
@@ -160,11 +154,11 @@ export class AuthService {
     this.router.navigate(['/']);
   }
 
+ 
   changePassword(changePasswordData: any) {
     return this.http.post(
       this.apiUrl + '/change-password',
-      changePasswordData,
-      { withCredentials: true }
+      changePasswordData
     );
   }
 }
