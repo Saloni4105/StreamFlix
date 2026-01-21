@@ -29,7 +29,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     
     this.authService.currentUser$.subscribe(user => {
       this.currentuser = user;
-      this.isAdminUser = user?.role === 'ROLE_ADMIN'; 
+      this.isAdminUser = user?.role === 'ADMIN'; 
     });
 
     this.updateMode();

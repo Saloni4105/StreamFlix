@@ -163,9 +163,9 @@ export class UserList implements OnInit {
   }
 
   changeUserRole(user: any) {
-    const newRole = user?.role === 'ROLE_ADMIN'
-  ? 'ROLE_USER'
-  : 'ROLE_ADMIN';
+    const newRole = user?.role === 'ADMIN'
+  ? 'USER'
+  : 'ADMIN';
 
 
     this.dialogService.openConfirmation(
@@ -190,7 +190,7 @@ export class UserList implements OnInit {
   }
 
   getRoleBadgeClass(role: string): string {
-  return role === 'ROLE_ADMIN'
+  return role === 'ADMIN'
     ? 'role-badge admin'
     : 'role-badge user';
 }
