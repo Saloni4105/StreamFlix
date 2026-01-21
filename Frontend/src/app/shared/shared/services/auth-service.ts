@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
 })
 export class AuthService {
 
-  private apiUrl = environment.apiUrl + '/api/auth';
+  private apiUrl = environment.apiUrl + '/auth';
 
   private currentUserSubject = new BehaviorSubject<any>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
@@ -96,7 +96,10 @@ export class AuthService {
 
   isAdmin(): boolean {
     const user = this.getCurrentUser();
-    return user?.role === 'ROLE_ADMIN';
+    console.log('Checking admin role for user:', user);
+    const isAdmin = user?.role === 'ADMIN';
+    console.log('Is admin result:', isAdmin);
+    return isAdmin;
   }
 
   resendVerificationEmail(email: string) {
