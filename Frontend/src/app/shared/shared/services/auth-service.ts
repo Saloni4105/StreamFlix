@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
 })
 export class AuthService {
 
-  private apiUrl = environment.apiUrl + '/auth';
+  private apiUrl = environment.apiUrl + '/api/auth';
 
   private currentUserSubject = new BehaviorSubject<any>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
@@ -36,16 +36,29 @@ export class AuthService {
     };
   }
 
+  // 🔥 FIXED
   signup(signupData: any) {
-    return this.http.post(this.apiUrl + '/signup', signupData);
+    return this.http.post(
+      this.apiUrl + '/signup',
+      signupData,
+      { withCredentials: true }
+    );
   }
 
   verifyEmail(token: string) {
-    return this.http.get(this.apiUrl + '/verify-email?token=' + token);
+    return this.http.get(
+      this.apiUrl + '/verify-email?token=' + token,
+      { withCredentials: true }
+    );
   }
 
+  // 🔥 FIXED
   login(loginData: any) {
-    return this.http.post(this.apiUrl + '/login', loginData).pipe(
+    return this.http.post(
+      this.apiUrl + '/login',
+      loginData,
+      { withCredentials: true }
+    ).pipe(
       tap(response => this.handleAuthSuccess(response))
     );
   }
@@ -87,53 +100,68 @@ export class AuthService {
   }
 
   resendVerificationEmail(email: string) {
-    return this.http.post(this.apiUrl + '/resend-verification', { email });
+    return this.http.post(
+      this.apiUrl + '/resend-verification',
+      { email },
+      { withCredentials: true }
+    );
   }
 
   forgotPassword(email: string) {
-    return this.http.post(this.apiUrl + '/forgot-password', { email });
+    return this.http.post(
+      this.apiUrl + '/forgot-password',
+      { email },
+      { withCredentials: true }
+    );
   }
 
   resetPassword(resetPasswordData: { token: string; newPassword: string }) {
-  return this.http.post(this.apiUrl + '/reset-password', resetPasswordData);
-}
+    return this.http.post(
+      this.apiUrl + '/reset-password',
+      resetPasswordData,
+      { withCredentials: true }
+    );
+  }
 
-
-  initializeAuth(): Promise<void>{
-    return new Promise((resolve) =>{
-      if(!this.isLoggedIn())
-      {
+  initializeAuth(): Promise<void> {
+    return new Promise((resolve) => {
+      if (!this.isLoggedIn()) {
         this.setCurrentUser(null);
         resolve();
         return;
       }
 
       this.fetchCurrentUser().subscribe({
-        next:(user) =>{
+        next: (user) => {
           this.handleAuthSuccess(user);
           resolve();
         },
-        error: () =>{
+        error: () => {
           this.handleAuthSuccess(null);
           resolve();
         }
-      })
-    })
+      });
+    });
   }
 
-  private fetchCurrentUser(){
-    return this.http.get(this.apiUrl + '/current-user');
+  private fetchCurrentUser() {
+    return this.http.get(
+      this.apiUrl + '/current-user',
+      { withCredentials: true }
+    );
   }
 
-  logout()
-  {
+  logout() {
     localStorage.removeItem('token');
     this.currentUserSubject.next(null);
     this.router.navigate(['/']);
   }
 
-  changePassword(changePasswordData: any)
-  {
-    return this.http.post(this.apiUrl + '/change-password', changePasswordData);
+  changePassword(changePasswordData: any) {
+    return this.http.post(
+      this.apiUrl + '/change-password',
+      changePasswordData,
+      { withCredentials: true }
+    );
   }
 }

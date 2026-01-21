@@ -65,14 +65,16 @@ public class SecurityConfig {
         return http.build();
     }
 
-    /* 🔽 ONLY NEW ADDITION – CORS CONFIG */
+    /*  ONLY NEW ADDITION – CORS CONFIG */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
 
         CorsConfiguration config = new CorsConfiguration();
 
         config.setAllowedOrigins(List.of(
-                "https://streamflix-sg.netlify.app"
+                "https://streamflix-sg.netlify.app",
+                "http://localhost:4200"
+
         ));
 
         config.setAllowedMethods(List.of(

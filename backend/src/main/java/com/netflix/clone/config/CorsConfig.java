@@ -8,14 +8,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class CorsConfig implements WebMvcConfigurer
 {
-    @Value("${app.cors.allowed-origins:https://streamflix-sg.netlify.app,http://localhost:4200}")
-    private String[] allowedOrigin;
-
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry
                 .addMapping("/api/**")
-                .allowedOrigins(allowedOrigin)
+                .allowedOrigins("https://streamflix-sg.netlify.app",
+                        "http://localhost:4200")
                 .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .exposedHeaders("Location", "Content-Disposition")
