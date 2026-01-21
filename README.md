@@ -1,6 +1,8 @@
 # 🎬 StreamFlix
 
-A  **full‑stack video streaming platform** inspired by Netflix, built with **Angular (Frontend)** and **Spring Boot (Backend)**. StreamFlix supports **secure authentication, role-based access (Admin/User), video management, favorites, and a modern UI**.
+A **full-stack video streaming platform** inspired by Netflix, built with **Angular (Frontend)** and **Spring Boot (Backend)**. StreamFlix supports **secure authentication, role-based access (Admin/User), video management, favorites, and a modern UI**.
+
+---
 
 ## 🚀 Features
 
@@ -26,10 +28,11 @@ A  **full‑stack video streaming platform** inspired by Netflix, built with **A
 
 ### 💻 UI / UX
 
-* Netflix‑inspired modern dark UI
+* Netflix-inspired modern dark UI
 * Fully responsive design
 * Clean component-based Angular architecture
 
+---
 
 ## 🛠️ Tech Stack
 
@@ -47,9 +50,11 @@ A  **full‑stack video streaming platform** inspired by Netflix, built with **A
 * REST APIs
 * MySQL Database
 
+---
 
 ## 📂 Project Structure
 
+```text
 StreamFlix/
 │── Frontend/        # Angular application
 │── backend/         # Spring Boot backend
@@ -57,32 +62,32 @@ StreamFlix/
 │── README.md
 ```
 
+---
+
 ## 📸 Application Screenshots
 
 ### 🏠 Landing Page
 
 ![Landing Page](./Screenshots/Landing_Page.png)
+
 ---
 
 ### 🔐 Authentication
 
 **Sign In**
-
 ![Sign In](./Screenshots/Sign-in.png)
 
 **Sign Up**
-
 ![Sign Up](./Screenshots/Signup.png)
+
 ---
 
 ### 👥 User Experience
 
 **User Dashboard**
-
 ![User View](./Screenshots/User-view.png)
 
 **My Favorites**
-
 ![My Favorites](./Screenshots/My-favorite.png)
 
 ---
@@ -90,15 +95,12 @@ StreamFlix/
 ### 🧑‍💼 Admin Panel
 
 **Switch to Admin Panel**
-
 ![Switch Panel](./Screenshots/switch-panel.png)
 
 **User Management**
-
 ![Admin View](./Screenshots/Admin-view.png)
 
 **Add New User**
-
 ![Add User](./Screenshots/Add-user.png)
 
 ---
@@ -106,7 +108,6 @@ StreamFlix/
 ### 🎬 Video Management
 
 **Video Library**
-
 ![Videos](./Screenshots/videos.png)
 
 ---
@@ -136,7 +137,7 @@ ng serve --port 4200
 * Route guards for protected pages
 * Role-based authorization
 * Clean code & modular architecture
-* Production-ready deployment setup
+* Production-ready project structure
 
 ---
 
@@ -153,7 +154,7 @@ ng serve --port 4200
 ## 👩‍💻 Author
 
 **Saloni Gawande**
-Computer Engineering Student | Full‑Stack Developer 
+Computer Engineering Student | Full-Stack Developer
 
 📫 GitHub: [https://github.com/Saloni4105](https://github.com/Saloni4105)
 
