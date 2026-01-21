@@ -163,7 +163,10 @@ export class UserList implements OnInit {
   }
 
   changeUserRole(user: any) {
-    const newRole = user.role === 'ADMIN' ? 'USER' : 'ADMIN';
+    const newRole = user?.role === 'ROLE_ADMIN'
+  ? 'ROLE_USER'
+  : 'ROLE_ADMIN';
+
 
     this.dialogService.openConfirmation(
       'Change User Role',
@@ -187,8 +190,11 @@ export class UserList implements OnInit {
   }
 
   getRoleBadgeClass(role: string): string {
-    return role === 'ADMIN' ? 'role-badge admin' : 'role-badge user';
-  }
+  return role === 'ROLE_ADMIN'
+    ? 'role-badge admin'
+    : 'role-badge user';
+}
+
 
   getStatusBadgeClass(status: boolean): string {
     return status ? 'status-badge active' : 'status-badge inactive';

@@ -10,46 +10,58 @@ import { NavigationEnd, Router } from '@angular/router';
   templateUrl: './header.html',
   styleUrl: './header.css',
 })
-export class HeaderComponent implements OnInit, OnDestroy{
+export class HeaderComponent implements OnInit, OnDestroy {
   @Input() showRouterOutlet: boolean = true;
+
   currentuser: any = null;
   isAdminMode: boolean = false;
+  isAdminUser: boolean = false;   
+
   private routerSubscription: Subscription | null = null;
 
-  constructor(private authService: AuthService,
+  constructor(
+    private authService: AuthService,
     private dialogService: DialogService,
     private router: Router
-  ){}
+  ) {}
 
   ngOnInit(): void {
-      this.currentuser = this.authService.getCurrentUser();
-      this.updateMode();
+    
+    this.authService.currentUser$.subscribe(user => {
+      this.currentuser = user;
+      this.isAdminUser = user?.role === 'ROLE_ADMIN'; 
+    });
 
-      this.routerSubscription = this.router.events
+    this.updateMode();
+
+    this.routerSubscription = this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe(() => {
         this.updateMode();
       });
   }
 
-  private updateMode():void{
+  private updateMode(): void {
     this.isAdminMode = this.router.url.startsWith('/admin');
   }
 
   ngOnDestroy(): void {
-    if(this.routerSubscription){
+    if (this.routerSubscription) {
       this.routerSubscription.unsubscribe();
     }
   }
 
+  
   isAdmin(): boolean {
-    return this.currentuser?.role === 'ADMIN';
+    return this.isAdminUser;
   }
 
-  switchMode(): void{
-    if(this.isAdminMode){
+  switchMode(): void {
+    if (!this.isAdminUser) return; 
+
+    if (this.isAdminMode) {
       this.router.navigate(['/home']);
-    }else{
+    } else {
       this.router.navigate(['/admin']);
     }
   }
@@ -59,17 +71,18 @@ export class HeaderComponent implements OnInit, OnDestroy{
   }
 
   logout(): void {
-    this.dialogService.openConfirmation(
-      'Lgout?',
-      'Are you sure want to logout from your account',
-      'Logout',
-      'Cancel',
-      'warning'
-    ).subscribe(result => {
-      if(result){
-        this.authService.logout();
-      }
-    });
+    this.dialogService
+      .openConfirmation(
+        'Logout?',
+        'Are you sure want to logout from your account',
+        'Logout',
+        'Cancel',
+        'warning'
+      )
+      .subscribe(result => {
+        if (result) {
+          this.authService.logout();
+        }
+      });
   }
 }
-

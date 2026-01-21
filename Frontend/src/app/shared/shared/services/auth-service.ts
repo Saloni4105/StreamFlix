@@ -52,7 +52,7 @@ export class AuthService {
     );
   }
 
-  // 🔥 FIXED
+ 
   login(loginData: any) {
     return this.http.post(
       this.apiUrl + '/login',
@@ -96,7 +96,7 @@ export class AuthService {
 
   isAdmin(): boolean {
     const user = this.getCurrentUser();
-    return user?.role === 'ADMIN';
+    return user?.role === 'ROLE_ADMIN';
   }
 
   resendVerificationEmail(email: string) {
